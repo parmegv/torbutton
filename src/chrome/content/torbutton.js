@@ -1406,6 +1406,7 @@ function torbutton_new_identity() {
  *      g. SSL Session IDs
  *      h. last open location url
  *      i. clear content prefs
+ *      j. permissions
  *   3. Sends tor the NEWNYM signal to get a new circuit
  *   4. Opens a new window with the default homepage
  *   5. Closes this window
@@ -1570,14 +1571,20 @@ function torbutton_do_new_identity() {
         createInstance(Ci.nsIContentPrefService);
     cps.removeGroupedPrefs();
   }
-  
+
   torbutton_log(3, "New Identity: Syncing prefs");
 
   // Force prefs to be synced to disk
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
       .getService(Components.interfaces.nsIPrefService);
   prefService.savePrefFile(null);
-  
+
+  torbutton_log(3, "New Identity: Clearing permissions");
+
+  let pm = Cc["@mozilla.org/permissionmanager;1"].
+           getService(Ci.nsIPermissionManager);
+  pm.removeAll();
+
   torbutton_log(3, "New Identity: Sending NEWNYM");
 
   // We only support TBB for newnym.
