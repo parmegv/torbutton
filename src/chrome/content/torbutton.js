@@ -2771,6 +2771,16 @@ var torbutton_resizelistener =
       // resizes the outer width to that value instead. Must use resizeBy()
       // instead of assignment or resizeTo()
       win.resizeBy(width - win.innerWidth, height - win.innerHeight);
+      // In case the former resizing did not work as expected (e.g. because the
+      // toolbar icon of an other extension got merged later into the chrome,
+      // reducing the seize of the inner window again) we resize the window
+      // (again) in order to a) finally get the screen size being a multiple of
+      // 200 x 100 and to b) affect the usability (resizing a window after it
+      // got visible) as little as possible.
+      setTimeout(function() {
+                   win.resizeBy(width - win.innerWidth,
+                                height - win.innerHeight);
+                 }, 0);
       torbutton_log(3, "Resized new window from: " + win.innerWidth + "x" +
         win.innerHeight + " to " + width + "x" + height + " in state " +
         window.windowState);
