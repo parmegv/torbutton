@@ -61,6 +61,7 @@ function ExternalWrapper() {
     var observerService = Cc["@mozilla.org/observer-service;1"].
         getService(Ci.nsIObserverService);
     observerService.addObserver(this, "on-modify-drag-list", false);
+    observerService.addObserver(this, "on-datatransfer-available", false);
   } catch(e) {
     this.logger.log(5, "Failed to register drag observer");
   }
@@ -222,6 +223,14 @@ ExternalWrapper.prototype =
       }
 
       return this.filterDragURLs(subject);
+    } else if (topic == "on-datatransfer-available") {
+      this.logger.log(3, "The DataTransfer is available");
+      try {
+        subject.QueryInterface(Ci.nsIDOMDataTransfer);
+      } catch(e) {
+        this.logger.log(5, "subject is not a DOMDataTransfer: "+e);
+      }
+      return this.filterDataTransferURLs(subject);
     }
   },
 
@@ -249,6 +258,29 @@ ExternalWrapper.prototype =
       }
     }
   },
+
+  filterDataTransferURLs: function(aDataTransfer) {
+    var types = null;
+    var type = "";
+    var count = aDataTransfer.mozItemCount;
+    var len = 0;
+    for (var i = 0; i < count; ++i) {
+      this.logger.log(3, "Inspecting the data transfer: " + i);
+      types = aDataTransfer.mozTypesAt(i);
+      len = types.length;
+      for (var j = 0; j < len; ++j) {
+        type = types[j];
+        this.logger.log(3, "Type is: " + type);
+        if (type == "text/x-moz-url" ||
+            type == "text/x-moz-url-data" ||
+            type == "text/uri-list" ||
+            type == "application/x-moz-file-promise-url") {
+          this.logger.log(3, "Removing " + type);
+          aDataTransfer.clearData(type);
+        }
+      }
+    }
+  }
 
 };
 
