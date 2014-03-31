@@ -2888,6 +2888,57 @@ var torbutton_weblistener =
   { /*torbutton_eclog(1, 'called linkIcon'); */ return 0; }
 }
 
+/* Call it to resize window. Later is better, then it counts
+   all appeared bars to proper round inner sizes */
+function torbutton_resize_window(win) {
+
+    var diff_height = window.outerHeight - win.innerHeight;
+    var diff_width = window.outerWidth - win.innerWidth;
+
+
+    /* kludge kludge kludge
+       but working. */
+    var delta_fix = 0;
+    if (window.outerHeight == window.innerHeight) {
+      delta_fix = Math.floor(window.mozInnerScreenY) - window.screenY;
+      if (delta_fix == 0) // zero? it's maximized or no yet window
+        delta_fix = Math.floor(diff_height / 2);
+      else
+        delta_fix++;
+    }
+
+    /* window.screen.avail* returns maximum outer size available.
+       We no need screen resolution for desktop here,
+       which can't to count DPI settings, taskbar or something else  */
+
+    var maxHeight = window.screen.availHeight - (diff_height + delta_fix);
+    var maxWidth = window.screen.availWidth - diff_width ;
+
+    var width = 0;
+    var height = 0;
+
+    torbutton_log(5, "About to resize window: " + 
+                      window.outerWidth + "x" + window.outerHeight +
+                     " inner: " + win.innerWidth + "x" + win.innerHeight +
+                     " in state " + window.windowState +
+                     " Available: " + window.screen.availWidth + "x" +
+                      window.screen.availHeight);
+
+
+    if (maxWidth > 1000) {
+      width = 1000;
+    } else {
+      width = Math.floor(maxWidth/200.0)*200;
+    }
+
+    height = Math.floor(maxHeight/100.0)*100;
+
+    torbutton_log(5, "Max dimensions for resize: " + maxWidth + "x" +
+                      maxHeight + " Requested: " + width + "x" + height);
+
+    win.resizeBy(width - win.innerWidth, height - win.innerHeight);
+}
+
 // Bug 1506 P1/P3: Setting a fixed window size is important, but
 // probably not for android.
 var torbutton_resizelistener =
@@ -2913,10 +2964,6 @@ var torbutton_resizelistener =
         progress.removeProgressListener(this);
         return;
       }
-      var screenMan = Components.classes["@mozilla.org/gfx/screenmanager;1"].
-        getService(Components.interfaces.nsIScreenManager);
-      var junk = {}, availWidth = {}, availHeight = {};
-      screenMan.primaryScreen.GetRect(junk, junk, availWidth, availHeight);
 
       // We need to set the inner width to an initial value because it has none
       // at this point... Choosing "300" as this works even on Windows
@@ -2924,32 +2971,11 @@ var torbutton_resizelistener =
       win.innerWidth = 300;
       win.innerHeight = 300;
 
-      torbutton_log(3, "About to resize new window: " + window.outerWidth +
-        "x" + window.outerHeight + " inner: " + win.innerWidth + "x" + win.
-        innerHeight + " in state " + window.windowState + " Have " +
-        availWidth.value + "x" + availHeight.value);
-
-      var maxHeight = availHeight.value -
-        (window.outerHeight - win.innerHeight) - 51;
-      var maxWidth = availWidth.value - (window.outerWidth - win.innerWidth);
-      torbutton_log(3, "Got max dimensions: " + maxWidth + "x" + maxHeight);
-
-      var width;
-      var height;
-
-      if (maxWidth > 1000) {
-        width = 1000;
-      } else {
-        width = Math.floor(maxWidth/200.0)*200;
-      }
-
-      height = Math.floor(maxHeight/100.0)*100;
-
       var handler = function() {
         if (window.windowState === 1) {
           window.addEventListener("resize",
             function() {
-              win.resizeBy(width - win.innerWidth, height - win.innerHeight);
+              torbutton_resize_window(win);
               var calling_function = arguments.callee;
               setTimeout(function() {
                            torbutton_log(3, "Removing resize listener..");
@@ -2988,10 +3014,7 @@ var torbutton_resizelistener =
       // This is fun. any attempt to directly set the inner window actually
       // resizes the outer width to that value instead. Must use resizeBy()
       // instead of assignment or resizeTo()
-      win.resizeBy(width - win.innerWidth, height - win.innerHeight);
-      torbutton_log(3, "Resized new window from: " + win.innerWidth + "x" +
-        win.innerHeight + " to " + width + "x" + height + " in state " +
-        window.windowState);
+      torbutton_resize_window(win);
 
       // Resizing within this progress listener does not always work as overlays
       // of other extensions might still influence the height/width of the
@@ -3008,8 +3031,7 @@ var torbutton_resizelistener =
               torbutton_log(3, "Mutation observer: Window dimensions are: " +
                 win.innerWidth + " x " + win.innerHeight);
               setTimeout(function() {
-                           win.resizeBy(width - win.innerWidth,
-                             height - win.innerHeight);
+                           torbutton_resize_window(win);
                            torbutton_log(3, "Mutation observer: Window " +
                              "dimensions are (after resizing again): " + win.
                              innerWidth + " x " + win.innerHeight);
