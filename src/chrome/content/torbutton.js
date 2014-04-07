@@ -45,6 +45,9 @@ var m_tb_control_pass = null;
 
 var m_tb_orig_BrowserOnAboutPageLoad = null;
 
+var m_tb_domWindowUtils = window.QueryInterface(Ci.nsIInterfaceRequestor).
+                          getInterface(Ci.nsIDOMWindowUtils);
+
 // Bug 1506 P1: This object is only for updating the UI for toggling and style
 var torbutton_window_pref_observer =
 {
@@ -2913,10 +2916,6 @@ var torbutton_resizelistener =
         progress.removeProgressListener(this);
         return;
       }
-      var screenMan = Components.classes["@mozilla.org/gfx/screenmanager;1"].
-        getService(Components.interfaces.nsIScreenManager);
-      var junk = {}, availWidth = {}, availHeight = {};
-      screenMan.primaryScreen.GetRect(junk, junk, availWidth, availHeight);
 
       // We need to set the inner width to an initial value because it has none
       // at this point... Choosing "300" as this works even on Windows
@@ -2924,15 +2923,59 @@ var torbutton_resizelistener =
       win.innerWidth = 300;
       win.innerHeight = 300;
 
-      torbutton_log(3, "About to resize new window: " + window.outerWidth +
-        "x" + window.outerHeight + " inner: " + win.innerWidth + "x" + win.
-        innerHeight + " in state " + window.windowState + " Have " +
-        availWidth.value + "x" + availHeight.value);
+      var screenMan = Components.classes["@mozilla.org/gfx/screenmanager;1"].
+        getService(Components.interfaces.nsIScreenManager);
+      var junk = {}, availWidth = {}, availHeight = {};
+      screenMan.primaryScreen.GetAvailRect(junk, junk, availWidth, availHeight);
 
-      var maxHeight = availHeight.value -
-        (window.outerHeight - win.innerHeight) - 51;
-      var maxWidth = availWidth.value - (window.outerWidth - win.innerWidth);
-      torbutton_log(3, "Got max dimensions: " + maxWidth + "x" + maxHeight);
+      torbutton_log(3, "About to resize window: " +
+                    window.outerWidth + "x" + window.outerHeight +
+                    " inner: " + win.innerWidth + "x" + win.innerHeight +
+                    " in state " + window.windowState +
+                    " Available: " + availWidth.value + "x" +
+                    availHeight.value);
+
+      var diff_height = window.outerHeight - win.innerHeight;
+      var diff_width = window.outerWidth - win.innerWidth;
+      var delta_fix = 0;
+
+      // The following block tries to cope with funny corner cases where the
+      // title bar is not included in window.outerHeight. What could happen in
+      // this case? Well, assume the difference between window.outerHeight and
+      // win.innerHeight is 39. And lets further assume the available height is
+      // 725x539. If we resize the window in this case we get 600x500 for the
+      // inner window. And the outer window has a height of 539 *plus* the
+      // height of the titlebar (as it occupies some screen space at least
+      // after resizing) which probably leads to parts of the browser being not
+      // visible.
+      if (window.outerHeight == window.innerHeight) {
+        // We have an OS/window manager that does not count the titlebar into
+        // window.outerHeight. Lets try to account for it in a diffeent way.
+        delta_fix = Math.floor(window.mozInnerScreenY * m_tb_domWindowUtils.
+                               screenPixelsPerCSSPixel) - window.screenY;
+        if (delta_fix <= 0) {
+          // Zero or below? The window might be maximized or there is no window
+          // yet. Let's assume a reasonable safety margin.
+          delta_fix = Math.floor(diff_height / 2);
+        } else {
+          // Add 1 px for the separator between menu and title bar.
+          delta_fix++;
+        }
+      }
+
+      // We can't use screen resolution here as it does not account for
+      // e.g. DPI settings and taskbars. We can't use window.screen.avail*
+      // either as it on some platforms does not report correct values when
+      // used at this stage in the startup process. Therefore, we resorted to
+      // nsIScreenManager.
+      // XXX: Note though, there are probably still some OS/window manager
+      // configurations where this approach is not working. E.g. on a Debian
+      // with XFCE the available height is the same as the screen height.
+      // This is said to happen as well on Windows with Aero:
+      // https://stackoverflow.com/questions/3044230/
+      // difference-between-screen-availheight-and-window-height
+      var maxHeight = availHeight.value - (diff_height + delta_fix);
+      var maxWidth = availWidth.value - diff_width ;
 
       var width;
       var height;
@@ -2990,8 +3033,8 @@ var torbutton_resizelistener =
       // instead of assignment or resizeTo()
       win.resizeBy(width - win.innerWidth, height - win.innerHeight);
       torbutton_log(3, "Resized new window from: " + win.innerWidth + "x" +
-        win.innerHeight + " to " + width + "x" + height + " in state " +
-        window.windowState);
+                    win.innerHeight + " to " + width + "x" + height +
+                    " in state " + window.windowState);
 
       // Resizing within this progress listener does not always work as overlays
       // of other extensions might still influence the height/width of the
@@ -3009,7 +3052,7 @@ var torbutton_resizelistener =
                 win.innerWidth + " x " + win.innerHeight);
               setTimeout(function() {
                            win.resizeBy(width - win.innerWidth,
-                             height - win.innerHeight);
+                                        height - win.innerHeight);
                            torbutton_log(3, "Mutation observer: Window " +
                              "dimensions are (after resizing again): " + win.
                              innerWidth + " x " + win.innerHeight);
