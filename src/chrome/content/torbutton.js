@@ -1431,6 +1431,9 @@ function torbutton_send_ctrl_cmd(command) {
 // Bug 1506 P4: Needed for New Identity.
 function torbutton_new_identity() {
   try {
+    // Make sure that we can only click once on New Identiy to avoid race
+    // conditions leading to failures (see bug 11783 for an example).
+    document.getElementById("torbutton-new-identity").disabled = true;
     torbutton_do_new_identity();
   } catch(e) {
     torbutton_log(5, "Unexpected error on new identity: "+e);
