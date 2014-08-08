@@ -19,7 +19,7 @@
     <tabbox>
      <tabs>
       <tab label="&torbutton.prefs.tor_settings;"/>
-      <tab label="&torbutton.prefs.sec_settings;"/>
+      <tab label="&torbutton.prefs.anon_sec_settings;"/>
      </tabs>
      <tabpanels>
     <tabpanel>
@@ -140,16 +140,23 @@
        </vbox>
     </tabpanel>
     <tabpanel>
-     <vbox>
-       <checkbox id="torbutton_blockDisk" 
-              label="&torbutton.prefs.block_disk;"/>
-       <checkbox id="torbutton_blockPlugins" 
-              label="&torbutton.prefs.block_plugins;"/>
-       <checkbox id="torbutton_restrictThirdParty" 
-              label="&torbutton.prefs.restrict_thirdparty;"/>
-       <checkbox id="torbutton_resistFingerprinting" 
-              label="&torbutton.prefs.resist_fingerprinting;"/>
-     </vbox>
+      <vbox>
+        <vbox>
+          <checkbox id="torbutton_blockDisk"
+                    label="&torbutton.prefs.block_disk;"/>
+          <checkbox id="torbutton_blockPlugins"
+                    label="&torbutton.prefs.block_plugins;"/>
+          <checkbox id="torbutton_restrictThirdParty"
+                    label="&torbutton.prefs.restrict_thirdparty;"/>
+          <checkbox id="torbutton_resistFingerprinting"
+                    label="&torbutton.prefs.resist_fingerprinting;"/>
+        </vbox>
+        <hbox>
+          <vbox>
+            <scale flex="1" min="1" max="4" orient="vertical"/>
+          </vbox>
+        </hbox>
+      </vbox>
     </tabpanel>
 
 	</tabpanels>
