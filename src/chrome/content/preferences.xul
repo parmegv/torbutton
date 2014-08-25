@@ -161,18 +161,21 @@
             </vbox>
             <vbox height="200">
               <hbox flex="1" align="center">
-                <description>Low Security</description>
+                <description>Low (default)</description>
               </hbox>
               <hbox flex="1" align="center">
-                <description>Low to Medium Security</description>
+                <description>Medium-Low</description>
               </hbox>
               <hbox flex="1" align="center">
-                <description>Medium to High Security</description>
+                <description>Medium-High</description>
               </hbox>
               <hbox flex="1" align="center">
-                <description>High Security</description>
+                <description>High</description>
               </hbox>
             </vbox>
+          </hbox>
+          <hbox>
+            <radio flex="1" label="Custom Values" selected="false"/>
           </hbox>
         </groupbox>
       </vbox>
