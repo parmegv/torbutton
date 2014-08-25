@@ -44,7 +44,7 @@
 <!ENTITY torbutton.context_menu.openTorWindow.key "d">
 <!ENTITY torbutton.button.label "Torbutton">
 <!ENTITY torbutton.button.tooltip "Click to initialize Torbutton">
-<!ENTITY torbutton.prefs.anon_sec_settings "Anonymity and Security Settings">
+<!ENTITY torbutton.prefs.privacy_security_settings "Privacy and Security Settings">
 <!ENTITY torbutton.prefs.block_thread "Block history reads during Tor (crucial)">
 <!ENTITY torbutton.prefs.block_thwrite "Block history writes during Tor (recommended)">
 <!ENTITY torbutton.prefs.block_nthread "Block history reads during Non-Tor (optional)">

@@ -19,7 +19,7 @@
     <tabbox>
      <tabs>
       <tab label="&torbutton.prefs.tor_settings;"/>
-      <tab label="&torbutton.prefs.anon_sec_settings;"/>
+      <tab label="&torbutton.prefs.privacy_security_settings;"/>
      </tabs>
      <tabpanels>
     <tabpanel>
@@ -141,7 +141,8 @@
     </tabpanel>
     <tabpanel>
       <vbox>
-        <vbox>
+        <groupbox>
+          <caption label="Privacy Settings"/>
           <checkbox id="torbutton_blockDisk"
                     label="&torbutton.prefs.block_disk;"/>
           <checkbox id="torbutton_blockPlugins"
@@ -150,12 +151,30 @@
                     label="&torbutton.prefs.restrict_thirdparty;"/>
           <checkbox id="torbutton_resistFingerprinting"
                     label="&torbutton.prefs.resist_fingerprinting;"/>
-        </vbox>
-        <hbox>
-          <vbox>
-            <scale flex="1" min="1" max="4" orient="vertical"/>
-          </vbox>
-        </hbox>
+        </groupbox>
+        <spacer flex="1"/>
+        <groupbox>
+          <caption label="Security Level"/>
+          <hbox>
+            <vbox>
+              <scale height="200" min="1" max="4" orient="vertical"/>
+            </vbox>
+            <vbox height="200">
+              <hbox flex="1" align="center">
+                <description>Low Security</description>
+              </hbox>
+              <hbox flex="1" align="center">
+                <description>Low to Medium Security</description>
+              </hbox>
+              <hbox flex="1" align="center">
+                <description>Medium to High Security</description>
+              </hbox>
+              <hbox flex="1" align="center">
+                <description>High Security</description>
+              </hbox>
+            </vbox>
+          </hbox>
+        </groupbox>
       </vbox>
     </tabpanel>
 
