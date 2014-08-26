@@ -180,11 +180,17 @@ function torbutton_prefs_init(doc) {
         doc.getElementById('torbutton_settingsMethod').selectedItem = doc.getElementById('torbutton_transparentTor');
     }
 
+    // Privacy and security settings
     doc.getElementById('torbutton_blockDisk').checked = o_torprefs.getBoolPref('block_disk');
     doc.getElementById('torbutton_resistFingerprinting').checked = o_torprefs.getBoolPref('resist_fingerprinting');
     doc.getElementById('torbutton_blockPlugins').checked = o_torprefs.getBoolPref('no_tor_plugins');
     doc.getElementById('torbutton_restrictThirdParty').checked = o_torprefs.getBoolPref('restrict_thirdparty');
-
+    doc.getElementById('torbutton_sec_slider').value =
+      o_torprefs.getIntPref('security_slider');
+    doc.getElementById('torbutton_sec_custom').checked =
+      o_torprefs.getBoolPref('security_custom');
+    doc.getElementById('torbutton_sec_custom').collapsed =
+      !o_torprefs.getBoolPref('security_custom');
     torbutton_prefs_set_field_attributes(doc);
 }
 

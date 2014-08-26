@@ -142,7 +142,7 @@
     <tabpanel>
       <vbox>
         <groupbox>
-          <caption label="Privacy Settings"/>
+          <caption label="&torbutton.prefs.priv_caption;"/>
           <checkbox id="torbutton_blockDisk"
                     label="&torbutton.prefs.block_disk;"/>
           <checkbox id="torbutton_blockPlugins"
@@ -154,28 +154,38 @@
         </groupbox>
         <spacer flex="1"/>
         <groupbox>
-          <caption label="Security Level"/>
+          <caption label="&torbutton.prefs.sec_caption;"/>
           <hbox>
             <vbox>
-              <scale height="200" min="1" max="4" orient="vertical"/>
+              <scale id="torbutton_sec_slider" height="200" min="1" max="4"
+                     movetoclick="true" orient="vertical"/>
             </vbox>
             <vbox height="200">
               <hbox flex="1" align="center">
-                <description>Low (default)</description>
+                <description id="torbutton_sec_low">
+                  &torbutton.prefs.sec_low;
+                </description>
               </hbox>
               <hbox flex="1" align="center">
-                <description>Medium-Low</description>
+                <description id="torbutton_sec_med_low">
+                  &torbutton.prefs.sec_med_low;
+                </description>
               </hbox>
               <hbox flex="1" align="center">
-                <description>Medium-High</description>
+                <description id="torbutton_sec_med_high">
+                  &torbutton.prefs.sec_med_high;
+                </description>
               </hbox>
               <hbox flex="1" align="center">
-                <description>High</description>
+                <description id="torbutton_sec_high">
+                  &torbutton.prefs.sec_high;
+                </description>
               </hbox>
             </vbox>
           </hbox>
           <hbox>
-            <radio flex="1" label="Custom Values" selected="false"/>
+            <checkbox id="torbutton_sec_custom" flex="1"
+                   label="&torbutton.prefs.sec_custom;"/>
           </hbox>
         </groupbox>
       </vbox>
