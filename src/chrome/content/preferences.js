@@ -190,7 +190,10 @@ function torbutton_prefs_init(doc) {
     let custom_values = o_torprefs.getBoolPref('security_custom');
     sec_slider.value = o_torprefs.getIntPref('security_slider');
     sec_slider.disabled = custom_values;
-    sec_custom.checked = o_torprefs.getBoolPref('security_custom');
+    // Setting |disabled| to |false| is not enough to have the element
+    // non-responding. We need to hanlde |movetoclick| as well.
+    sec_slider.setAttribute("movetoclick", !custom_values);
+    sec_custom.checked = custom_values;
     sec_custom.collapsed = !custom_values;
 
     torbutton_prefs_set_field_attributes(doc);
@@ -429,3 +432,15 @@ function torbutton_prefs_reset_defaults() {
         .getService(Components.interfaces.nsIPrefService);
     prefService.savePrefFile(null);
 }
+
+function torbutton_toggle_scale(doc) {
+    let scale = doc.getElementById("torbutton_sec_slider");
+    if (doc.getElementById("torbutton_sec_custom").checked) {
+        scale.disabled = true;
+        scale.setAttribute("movetoclick", false);
+    } else {
+        scale.disabled = false;
+        scale.setAttribute("movetoclick", true);
+    }
+}
+

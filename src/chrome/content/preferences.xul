@@ -185,7 +185,8 @@
           </hbox>
           <hbox>
             <checkbox id="torbutton_sec_custom" flex="1"
-                   label="&torbutton.prefs.sec_custom;"/>
+                      oncommand="torbutton_toggle_scale(document);"
+                      label="&torbutton.prefs.sec_custom;"/>
           </hbox>
         </groupbox>
       </vbox>
