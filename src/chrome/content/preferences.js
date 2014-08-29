@@ -185,12 +185,14 @@ function torbutton_prefs_init(doc) {
     doc.getElementById('torbutton_resistFingerprinting').checked = o_torprefs.getBoolPref('resist_fingerprinting');
     doc.getElementById('torbutton_blockPlugins').checked = o_torprefs.getBoolPref('no_tor_plugins');
     doc.getElementById('torbutton_restrictThirdParty').checked = o_torprefs.getBoolPref('restrict_thirdparty');
-    doc.getElementById('torbutton_sec_slider').value =
-      o_torprefs.getIntPref('security_slider');
-    doc.getElementById('torbutton_sec_custom').checked =
-      o_torprefs.getBoolPref('security_custom');
-    doc.getElementById('torbutton_sec_custom').collapsed =
-      !o_torprefs.getBoolPref('security_custom');
+    let sec_slider = doc.getElementById('torbutton_sec_slider');
+    let sec_custom = doc.getElementById('torbutton_sec_custom');
+    let custom_values = o_torprefs.getBoolPref('security_custom');
+    sec_slider.value = o_torprefs.getIntPref('security_slider');
+    sec_slider.disabled = custom_values;
+    sec_custom.checked = o_torprefs.getBoolPref('security_custom');
+    sec_custom.collapsed = !custom_values;
+
     torbutton_prefs_set_field_attributes(doc);
 }
 
