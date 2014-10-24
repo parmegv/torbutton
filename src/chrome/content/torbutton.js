@@ -218,6 +218,9 @@ var torbutton_unique_pref_observer =
             case "extensions.torbutton.restrict_thirdparty":
                 torbutton_update_thirdparty_prefs();
                 break;
+            case "extensions.torbutton.security_slider":
+                torbutton_update_security_slider();
+                break;
         }
     }
 }
@@ -513,6 +516,8 @@ function torbutton_init() {
 
     // initialize preferences before we start our prefs observer
     torbutton_init_prefs();
+    // set some important security prefs according to the chosen security level
+    torbutton_update_security_slider();
 
     // set panel style from preferences
     torbutton_set_panel_style();
@@ -2090,6 +2095,113 @@ function torbutton_update_thirdparty_prefs() {
     var prefService = Components.classes["@mozilla.org/preferences-service;1"]
         .getService(Components.interfaces.nsIPrefService);
     prefService.savePrefFile(null);
+}
+
+var torbutton_sec_l_bool_prefs = {
+  "gfx.font_rendering.opentype_svg.enabled" : false,
+};
+
+var torbutton_sec_ml_bool_prefs = {
+  "javascript.options.ion.content" : false,
+  "javascript.options.typeinference" : false,
+  "javascript.options.asmjs" : false,
+  "noscript.forbidMedia" : true,
+  "media.webaudio.enabled" : false,
+  // XXX: pref for disabling MathML is missing
+};
+
+var torbutton_sec_mh_bool_prefs = {
+  "javascript.options.baselinejit.content" : false,
+  // XXX: pref for disableing SVG is missing
+};
+
+var torbutton_sec_h_bool_prefs = {
+  "noscript.forbidFonts" : true,
+  "gfx.font_rendering.graphite.enabled" : true,
+  "noscript.globalHTTPSWhitelist" : false,
+  "noscript.global" : false,
+  "media.ogg.enabled" : false,
+  "media.opus.enabled" :  false,
+  "media.wave.enabled" : false,
+  "media.apple.mp3.enabled" : false
+};
+
+function torbutton_update_security_slider() {
+  let mode = m_tb_prefs.getIntPref("extensions.torbutton.security_slider");
+  switch (mode) {
+    case 1:
+      for (p in torbutton_sec_l_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_l_bool_prefs[p]);
+      }
+      for (p in torbutton_sec_ml_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, !torbutton_sec_ml_bool_prefs[p])
+      }
+      for (p in torbutton_sec_mh_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, !torbutton_sec_mh_bool_prefs[p])
+      }
+      for (p in torbutton_sec_h_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, !torbutton_sec_h_bool_prefs[p])
+      }
+      m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 0);
+      if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
+          m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
+          m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
+        m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", false);
+      }
+      break;
+    case 2:
+      for (p in torbutton_sec_l_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_l_bool_prefs[p]);
+      }
+      for (p in torbutton_sec_ml_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_ml_bool_prefs[p])
+      }
+      for (p in torbutton_sec_mh_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, !torbutton_sec_mh_bool_prefs[p])
+      }
+      for (p in torbutton_sec_h_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, !torbutton_sec_h_bool_prefs[p])
+      }
+      m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 0);
+      if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
+          m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
+          m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
+        m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", false);
+      }
+      break;
+    case 3:
+      for (p in torbutton_sec_l_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_l_bool_prefs[p]);
+      }
+      for (p in torbutton_sec_ml_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_ml_bool_prefs[p])
+      }
+      for (p in torbutton_sec_mh_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_mh_bool_prefs[p])
+      }
+      for (p in torbutton_sec_h_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, !torbutton_sec_h_bool_prefs[p])
+      }
+      m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 1);
+      m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", false);
+      break;
+    case 4:
+      for (p in torbutton_sec_l_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_l_bool_prefs[p]);
+      }
+      for (p in torbutton_sec_ml_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_ml_bool_prefs[p])
+      }
+      for (p in torbutton_sec_mh_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_mh_bool_prefs[p])
+      }
+      for (p in torbutton_sec_h_bool_prefs) {
+        m_tb_prefs.setBoolPref(p, torbutton_sec_h_bool_prefs[p])
+      }
+      m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 1);
+      m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", true);
+      break;
+  }
 }
 
 // Bug 1506 P0: This code is a toggle-relic. 
