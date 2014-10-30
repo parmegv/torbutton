@@ -2118,7 +2118,7 @@ var torbutton_sec_mh_bool_prefs = {
 var torbutton_sec_h_bool_prefs = {
   "noscript.forbidFonts" : true,
   "gfx.font_rendering.graphite.enabled" : true,
-  "noscript.globalHTTPSWhitelist" : false,
+  "noscript.globalHttpsWhitelist" : false,
   "noscript.global" : false,
   "media.ogg.enabled" : false,
   "media.opus.enabled" :  false,
@@ -2128,6 +2128,7 @@ var torbutton_sec_h_bool_prefs = {
 
 function torbutton_update_security_slider() {
   let mode = m_tb_prefs.getIntPref("extensions.torbutton.security_slider");
+  let capValue = m_tb_prefs.getCharPref("capability.policy.maonoscript.sites");
   switch (mode) {
     case 1:
       for (p in torbutton_sec_l_bool_prefs) {
@@ -2143,6 +2144,11 @@ function torbutton_update_security_slider() {
         m_tb_prefs.setBoolPref(p, !torbutton_sec_h_bool_prefs[p])
       }
       m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 0);
+      // XXX: Adding and removing "https:" is needed due to a bug in Noscript.
+      if (capValue.indexOf(" https:") < 0) {
+        m_tb_prefs.setCharPref("capability.policy.maonoscript.sites",
+          capValue + " https:");
+      }
       if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
           m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
           m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
@@ -2163,6 +2169,11 @@ function torbutton_update_security_slider() {
         m_tb_prefs.setBoolPref(p, !torbutton_sec_h_bool_prefs[p])
       }
       m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 0);
+      // XXX: Adding and removing "https:" is needed due to a bug in Noscript.
+      if (capValue.indexOf(" https:") < 0) {
+        m_tb_prefs.setCharPref("capability.policy.maonoscript.sites",
+          capValue + " https:");
+      }
       if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
           m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
           m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
@@ -2183,6 +2194,12 @@ function torbutton_update_security_slider() {
         m_tb_prefs.setBoolPref(p, !torbutton_sec_h_bool_prefs[p])
       }
       m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 1);
+      // XXX: Adding and removing "https:" is needed due to a bug in Noscript.
+      // missing.
+      if (capValue.indexOf(" https:") < 0) {
+        m_tb_prefs.setCharPref("capability.policy.maonoscript.sites", capValue +
+          " https:");
+      }
       m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", false);
       break;
     case 4:
@@ -2198,7 +2215,13 @@ function torbutton_update_security_slider() {
       for (p in torbutton_sec_h_bool_prefs) {
         m_tb_prefs.setBoolPref(p, torbutton_sec_h_bool_prefs[p])
       }
-      m_tb_prefs.setIntPref("noscript.allowHttpsOnly", 1);
+      // XXX: Adding and removing "https:" is needed due to a bug in Noscript.
+      // In the high-security mode we don't want to have JS stuff at all. Get
+      // rid of the whitelisting, too.
+      if (capValue.indexOf(" https:") >= 0) {
+        m_tb_prefs.setCharPref("capability.policy.maonoscript.sites",
+          capValue.replace(" https:", ""));
+      }
       m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", true);
       break;
   }
