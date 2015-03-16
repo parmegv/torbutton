@@ -186,6 +186,77 @@
                 </description>
               </hbox>
             </vbox>
+            <spacer flex="1"/>
+            <vbox flex="1" width="400">
+              <vbox id="desc_low" collapsed="true">
+                <description>&torbutton.prefs.sec_low_desc;</description>
+              </vbox>
+              <vbox id="desc_medium_low" collapsed="true">
+                <description>&torbutton.prefs.sec_not_low_desc;</description>
+                <description>&torbutton.prefs.sec_html5_desc;</description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_jit_desc_tooltip;">
+                  &torbutton.prefs.sec_some_jit_desc; &torbutton.prefs.sec_jit_slower_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_mathml_desc_tooltip;">
+                  &torbutton.prefs.sec_mathml_desc;
+                </description>
+              </vbox>
+              <vbox id="desc_medium_high" collapsed="true">
+                <description>&torbutton.prefs.sec_not_low_desc;</description>
+                <description>&torbutton.prefs.sec_html5_desc;</description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_jit_desc_tooltip;">
+                  &torbutton.prefs.sec_all_jit_desc; &torbutton.prefs.sec_jit_slower_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_mathml_desc_tooltip;">
+                  &torbutton.prefs.sec_mathml_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_font_rend_desc_tooltip;">
+                  &torbutton.prefs.sec_font_rend_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_svg_desc_tooltip;">
+                  &torbutton.prefs.sec_svg_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_js_https_desc_tooltip;">
+                    &torbutton.prefs.sec_js_https_desc;
+                </description>
+              </vbox>
+              <vbox id="desc_high" collapsed="false">
+                <description>&torbutton.prefs.sec_not_low_desc;</description>
+                <description>&torbutton.prefs.sec_html5_desc;</description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_jit_desc_tooltip;">
+                  &torbutton.prefs.sec_all_jit_desc; &torbutton.prefs.sec_jit_slower_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_mathml_desc_tooltip;">
+                  &torbutton.prefs.sec_mathml_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_font_rend_desc_tooltip;">
+                  &torbutton.prefs.sec_font_rend_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_svg_desc_tooltip;">
+                  &torbutton.prefs.sec_svg_desc;
+                </description>
+                <description>&torbutton.prefs.sec_all_js_desc;</description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_audio_video_desc_tooltip;">
+                  &torbutton.prefs.sec_audio_video_desc;
+                </description>
+                <description
+                  tooltiptext="&torbutton.prefs.sec_webfonts_desc_tooltip;">
+                  &torbutton.prefs.sec_webfonts_desc_tooltip;
+                </description>
+              </vbox>
+            </vbox>
           </hbox>
           <hbox>
             <checkbox id="torbutton_sec_custom" flex="1"
