@@ -153,19 +153,21 @@
 <!ENTITY torbutton.prefs.resist_fingerprinting "Change details that distinguish you from other Tor Browser users">
 <!ENTITY torbutton.prefs.sec_caption "Security Level">
 <!ENTITY torbutton.prefs.sec_low "Low (default)">
-<!ENTITY torbutton.prefs.sec_low_desc "At this security level, all browser features are enabled. This is the most usable experience.">
+<!ENTITY torbutton.prefs.sec_low_desc "This gives the most usable experience.">
+<!ENTITY torbutton.prefs.sec_font_rend_svg_tooltip "The SVG OpenType font rendering mechanism is disabled.">
 <!ENTITY torbutton.prefs.sec_med_low "Medium-Low">
-<!ENTITY torbutton.prefs.sec_not_low_desc "At this security level, the following changes apply:">
+<!ENTITY torbutton.prefs.sec_general_desc "At this security level, the following changes apply:">
 <!ENTITY torbutton.prefs.sec_html5_desc "HTML5 video and audio media become click-to-play via NoScript.">
 <!ENTITY torbutton.prefs.sec_some_jit_desc "Some JavaScript performance optimizations are disabled.">
 <!ENTITY torbutton.prefs.sec_jit_desc_tooltip "ION JIT, Type Inference, ASM.JS">
 <!ENTITY torbutton.prefs.sec_jit_slower_desc "Scripts on some sites may run slower.">
+<!ENTITY torbutton.prefs.sec_jar_desc "Remote JAR files are blocked.">
 <!ENTITY torbutton.prefs.sec_mathml_desc "Some mechanisms of displaying math equations are disabled.">
 <!ENTITY torbutton.prefs.sec_mathml_desc_tooltip "MathML is disabled.">
 <!ENTITY torbutton.prefs.sec_med_high "Medium-High">
 <!ENTITY torbutton.prefs.sec_all_jit_desc "All JavaScript performance optimizations are disabled.">
 <!ENTITY torbutton.prefs.sec_font_rend_desc "Some font rendering features are disabled.">
-<!ENTITY torbutton.prefs.sec_font_rend_desc_tooltip "The Graphite font rendering mechanism is disabled.">
+<!ENTITY torbutton.prefs.sec_font_rend_graphite_tooltip "The Graphite font rendering mechanism is disabled.">
 <!ENTITY torbutton.prefs.sec_svg_desc "Some types of images are disabled.">
 <!ENTITY torbutton.prefs.sec_svg_desc_tooltip "SVG images are disabled.">
 <!ENTITY torbutton.prefs.sec_js_https_desc "JavaScript is disabled by default on all non-HTTPS sites.">

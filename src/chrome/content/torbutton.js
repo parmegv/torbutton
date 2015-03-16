@@ -234,8 +234,8 @@ var torbutton_unique_pref_observer =
             case "javascript.options.asmjs":
             case "noscript.forbidMedia":
             case "media.webaudio.enabled":
-            case "mathml.disabled":
             case "network.jar.block-remote-files":
+            case "mathml.disabled":
             case "javascript.options.baselinejit.content":
             case "noscript.forbidFonts":
             case "gfx.font_rendering.graphite.enabled":
