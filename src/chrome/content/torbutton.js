@@ -235,6 +235,7 @@ var torbutton_unique_pref_observer =
             case "noscript.forbidMedia":
             case "media.webaudio.enabled":
             case "network.jar.block-remote-files":
+            case "mathml.disabled":
             case "javascript.options.baselinejit.content":
             case "noscript.forbidFonts":
             case "gfx.font_rendering.graphite.enabled":
@@ -2198,7 +2199,7 @@ function torbutton_update_thirdparty_prefs() {
 }
 
 var torbutton_sec_l_bool_prefs = {
-  "gfx.font_rendering.opentype_svg.enabled" : false,
+  "gfx.font_rendering.opentype_svg.enabled" : false
 };
 
 var torbutton_sec_ml_bool_prefs = {
@@ -2208,11 +2209,12 @@ var torbutton_sec_ml_bool_prefs = {
   "noscript.forbidMedia" : true,
   "media.webaudio.enabled" : false,
   "network.jar.block-remote-files" : true,
-  // XXX: pref for disabling MathML is missing
+  "mathml.disabled" : true
 };
 
 var torbutton_sec_mh_bool_prefs = {
   "javascript.options.baselinejit.content" : false,
+  "gfx.font_rendering.graphite.enabled" : false,
   "noscript.global" : false,
   "noscript.globalHttpsWhitelist" : true,
   // XXX: pref for disableing SVG is missing
@@ -2254,13 +2256,6 @@ function torbutton_update_security_slider() {
         m_tb_prefs.setCharPref("capability.policy.maonoscript.sites",
           capValue.replace(" https:", ""));
       }
-      if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
-        m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", false);
-      } else {
-        m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", true);
-      }
       break;
     case 2:
       for (p in torbutton_sec_l_bool_prefs) {
@@ -2283,13 +2278,6 @@ function torbutton_update_security_slider() {
         m_tb_prefs.setCharPref("capability.policy.maonoscript.sites",
           capValue.replace(" https:", ""));
       }
-      if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
-        m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", false);
-      } else {
-        m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", true);
-      }
       break;
     case 3:
       for (p in torbutton_sec_l_bool_prefs) {
@@ -2307,7 +2295,6 @@ function torbutton_update_security_slider() {
       for (p in torbutton_sec_mh_bool_prefs) {
         m_tb_prefs.setBoolPref(p, torbutton_sec_mh_bool_prefs[p])
       }
-      m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", false);
       break;
     case 4:
       for (p in torbutton_sec_l_bool_prefs) {
@@ -2335,7 +2322,6 @@ function torbutton_update_security_slider() {
         m_tb_prefs.setCharPref("capability.policy.maonoscript.sites",
           capValue.replace(" https:", ""));
       }
-      m_tb_prefs.setBoolPref("gfx.font_rendering.graphite.enabled", true);
       break;
   }
   m_tb_sliderUpdate = false;
@@ -2368,18 +2354,6 @@ function torbutton_security_slider_custom_check(mode) {
           return;
         }
       }
-      if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
-
-        if (m_tb_prefs.getBoolPref("gfx.font_rendering.graphite.enabled")) {
-          return;
-        }
-      } else {
-        if (!m_tb_prefs.getBoolPref("gfx.font_rendering.graphite.enabled")) {
-          return;
-        }
-      }
       // We are still here which means all preferences are properly reset. Leave
       // custom mode.
       m_tb_prefs.setBoolPref("extensions.torbutton.security_custom", false);
@@ -2402,18 +2376,6 @@ function torbutton_security_slider_custom_check(mode) {
       }
       for (p in torbutton_sec_h_bool_prefs) {
         if (m_tb_prefs.getBoolPref(p) === torbutton_sec_h_bool_prefs[p]) {
-          return;
-        }
-      }
-      if (m_tb_prefs.getCharPref("general.useragent.locale") !== "ko" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "vi" ||
-          m_tb_prefs.getCharPref("general.useragent.locale") !== "zh-CN") {
-
-        if (m_tb_prefs.getBoolPref("gfx.font_rendering.graphite.enabled")) {
-          return;
-        }
-      } else {
-        if (!m_tb_prefs.getBoolPref("gfx.font_rendering.graphite.enabled")) {
           return;
         }
       }
@@ -2447,9 +2409,6 @@ function torbutton_security_slider_custom_check(mode) {
           return;
         }
       }
-      if (m_tb_prefs.getBoolPref("gfx.font_rendering.graphite.enabled")) {
-        return;
-      }
       // We are still here which means all preferences are properly reset. Leave
       // custom mode.
       m_tb_prefs.setBoolPref("extensions.torbutton.security_custom", false);
@@ -2479,9 +2438,6 @@ function torbutton_security_slider_custom_check(mode) {
         if (m_tb_prefs.getBoolPref(p) !== torbutton_sec_h_bool_prefs[p]) {
           return;
         }
-      }
-      if (!m_tb_prefs.getBoolPref("gfx.font_rendering.graphite.enabled")) {
-        return;
       }
       // We are still here which means all preferences are properly reset. Leave
       // custom mode.
