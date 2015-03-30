@@ -26,7 +26,7 @@ let getPrefValue = function (prefName) {
 // __bindPrefAndInit(prefName, prefHandler)__
 // Applies prefHandler to the current value of pref specified by prefName.
 // Re-applies prefHandler whenever the value of the pref changes.
-// Returns a zero-arg function that unbinds the pref.
+// Returns a zero-arg function that unbinds the pref and stops the controller.
 let bindPrefAndInit = function (prefName, prefHandler) {
   let update = () => { prefHandler(getPrefValue(prefName)); },
       observer = { observe : function (subject, topic, data) {
@@ -36,7 +36,8 @@ let bindPrefAndInit = function (prefName, prefHandler) {
                    } };
   prefs.addObserver(prefName, observer, false);
   update();
-  return () => { prefs.removeObserver(prefName, observer); };
+  return () => { prefs.removeObserver(prefName, observer);
+                 prefHandler(false); };
 };
 
 // Export utility functions for external use.
