@@ -245,6 +245,7 @@ var torbutton_unique_pref_observer =
             case "javascript.options.asmjs":
             case "noscript.forbidMedia":
             case "media.webaudio.enabled":
+            case "media.mediasource.enabled":
             case "network.jar.block-remote-files":
             case "mathml.disabled":
             case "javascript.options.baselinejit.content":
@@ -2344,6 +2345,7 @@ var torbutton_sec_ml_bool_prefs = {
   "javascript.options.asmjs" : false,
   "noscript.forbidMedia" : true,
   "media.webaudio.enabled" : false,
+  "media.mediasource.enabled" : false,
   "network.jar.block-remote-files" : true,
   "mathml.disabled" : true
 };
@@ -2367,7 +2369,7 @@ function torbutton_update_security_slider() {
   let mode = m_tb_prefs.getIntPref("extensions.torbutton.security_slider");
   let capValue = m_tb_prefs.getCharPref("capability.policy.maonoscript.sites");
   switch (mode) {
-   case 1:
+    case 1:
       for (p in torbutton_sec_ml_bool_prefs) {
         m_tb_prefs.setBoolPref(p, torbutton_sec_ml_bool_prefs[p])
       }
