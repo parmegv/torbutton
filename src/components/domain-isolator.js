@@ -18,6 +18,7 @@ let logger = Cc["@torproject.org/torbutton-logger;1"]
 
 // Import crypto object (FF 37+).
 Cu.importGlobalProperties(["crypto"]);
+Cu.import("resource://gre/modules/Services.jsm");
 
 // ## mozilla namespace.
 // Useful functionality for interacting with Mozilla services.
@@ -48,6 +49,11 @@ mozilla.registerProxyChannelFilter = function (filterFunction, positionIndex) {
   };
   mozilla.protocolProxyService.registerChannelFilter(proxyFilter, positionIndex);
 };
+
+var m_tb_control_port = 9151;
+var m_tb_control_host = "127.0.0.1";
+var m_tb_control_pass = null;
+var m_tb_domWindowUtils = null;
 
 // ## tor functionality.
 let tor = {};
@@ -122,6 +128,86 @@ tor.clearIsolation = function () {
   tor.unknownDirtySince = 0;
 }
 
+tor.socket_readline = function(input) {
+  var str = "";
+  var bytes;
+  while((bytes = input.readBytes(1)) != "\n") {
+    if (bytes != '\r')
+      str += bytes;
+  }
+  return str;
+}
+
+tor.send_ctrl_cmd = function(command) {
+  if (!m_tb_control_pass) {
+    m_tb_control_pass = Components.
+      classes["@torproject.org/torlauncher-protocol-service;1"]
+      .getService(Components.interfaces.nsISupports).wrappedJSObject.
+      TorGetPassword(false);
+  }
+
+  if (!m_tb_domWindowUtils)
+    m_tb_domWindowUtils = Services.wm.getMostRecentWindow('navigator:browser').
+            QueryInterface(Components.interfaces.nsIInterfaceRequestor).
+            getInterface(Components.interfaces.nsIDOMWindowUtils);
+  // We spin the event queue until it is empty and we can be sure that sending
+  // NEWNYM is not leading to a deadlock (see bug 9531 comment 23 for an
+  // invstigation on why and when this may happen). This is surrounded by
+  // suppressing/unsuppressing user initiated events in a window's document to
+  // be sure that these events are not interfering with processing events being
+  // in the event queue.
+  var thread = Cc["@mozilla.org/thread-manager;1"].
+               getService(Ci.nsIThreadManager).currentThread;
+  m_tb_domWindowUtils.suppressEventHandling(true);
+  while (thread.processNextEvent(false)) {}
+  m_tb_domWindowUtils.suppressEventHandling(false);
+
+  try {
+    var socketTransportService = Components.classes["@mozilla.org/network/socket-transport-service;1"]
+        .getService(Components.interfaces.nsISocketTransportService);
+    var socket = socketTransportService.createTransport(null, 0, m_tb_control_host, m_tb_control_port, null);
+
+    // If we don't get a response from the control port in 2 seconds, someting is wrong..
+    socket.setTimeout(Ci.nsISocketTransport.TIMEOUT_READ_WRITE, 2);
+
+    var input = socket.openInputStream(3, 1, 1); // 3 == OPEN_BLOCKING|OPEN_UNBUFFERED
+    var output = socket.openOutputStream(3, 1, 1); // 3 == OPEN_BLOCKING|OPEN_UNBUFFERED
+
+    var inputStream     = Cc["@mozilla.org/binaryinputstream;1"].createInstance(Ci.nsIBinaryInputStream);
+    var outputStream    = Cc["@mozilla.org/binaryoutputstream;1"].createInstance(Ci.nsIBinaryOutputStream);
+
+    inputStream.setInputStream(input);
+    outputStream.setOutputStream(output);
+
+    var auth_cmd = "AUTHENTICATE "+m_tb_control_pass+"\r\n";
+    outputStream.writeBytes(auth_cmd, auth_cmd.length);
+
+    var bytes = tor.socket_readline(inputStream);
+
+    if (bytes.indexOf("250") != 0) {
+      logger.safe_log(4, "Unexpected auth response on control port "+m_tb_control_port+":", bytes);
+      return null;
+    }
+
+    logger.eclog(4, "Sending: " + command);
+    outputStream.writeBytes(command, command.length);
+    bytes = tor.socket_readline(inputStream);
+    if(bytes.indexOf("250") != 0) {
+      logger.safe_log(4, "Unexpected command response on control port "+m_tb_control_port+":", bytes);
+      return null;
+    }
+
+    // Closing these streams prevents a shutdown hang on Mac OS. See bug 10201.
+    inputStream.close();
+    outputStream.close();
+    socket.close(Components.results.NS_OK);
+    return bytes.substr(4);
+  } catch(e) {
+    logger.safe_log(4, "Exception on control port "+e);
+    return null;
+  }
+}
+
 // __tor.isolateCircuitsByDomain()__.
 // For every HTTPChannel, replaces the default SOCKS proxy with one that authenticates
 // to the SOCKS server (the tor client process) with a username (the first party domain)
@@ -132,6 +218,7 @@ tor.isolateCircuitsByDomain = function () {
     if (!tor.isolationEnabled)
       return aProxy;
 
+    tor.send_ctrl_cmd("NEW_REQUEST " + aChannel.URI.spec + "\r\n");
     try {
       let channel = aChannel.QueryInterface(Ci.nsIChannel),
           firstPartyURI = mozilla.thirdPartyUtil.getFirstPartyURIFromChannel(channel, true)
