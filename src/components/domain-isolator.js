@@ -150,16 +150,6 @@ tor.send_ctrl_cmd = function(command) {
     m_tb_domWindowUtils = Services.wm.getMostRecentWindow('navigator:browser').
             QueryInterface(Components.interfaces.nsIInterfaceRequestor).
             getInterface(Components.interfaces.nsIDOMWindowUtils);
-  // We spin the event queue until it is empty and we can be sure that sending
-  // NEWNYM is not leading to a deadlock (see bug 9531 comment 23 for an
-  // invstigation on why and when this may happen). This is surrounded by
-  // suppressing/unsuppressing user initiated events in a window's document to
-  // be sure that these events are not interfering with processing events being
-  // in the event queue.
-  var thread = Cc["@mozilla.org/thread-manager;1"].
-               getService(Ci.nsIThreadManager).currentThread;
-  m_tb_domWindowUtils.suppressEventHandling(true);
-  while (thread.processNextEvent(false)) {}
   m_tb_domWindowUtils.suppressEventHandling(false);
 
   try {
